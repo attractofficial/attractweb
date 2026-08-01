@@ -347,6 +347,12 @@ var lastOrder = null;
 
 function formatPrice(n){ return '৳' + Math.round(n).toLocaleString('en-US'); }
 function productImg(seed,w,h){ return 'https://picsum.photos/seed/' + seed + '/' + w + '/' + h + '?grayscale'; }
+function imgTag(seed,w,h,alt,extra){
+  extra = extra || '';
+  var local = 'images/' + seed + '.jpg';
+  var fallback = productImg(seed,w,h);
+  return '<img src="' + local + '" ' + extra + ' alt="' + alt + '" onerror="this.onerror=null;this.src=\'' + fallback + '\';">';
+}
 function findProduct(id){ return PRODUCTS.find(function(p){ return p.id === Number(id); }); }
 function escapeHtml(str){
   return str.replace(/[&<>"']/g, function(m){
@@ -389,7 +395,7 @@ function renderHome(){
   var featured = PRODUCTS.slice(0,8);
   return '' +
   '<section class="hero">' +
-    '<img src="' + productImg('attracthero',1600,1000) + '" alt="Attract autumn winter collection">' +
+    imgTag('attracthero',1600,1000,'Attract autumn winter collection') +
     '<div class="hero-content">' +
       '<p class="eyebrow mono">LOOK 01 — AUTUMN/WINTER 2026</p>' +
       '<h1>Wear What<br>Attracts You</h1>' +
@@ -398,23 +404,23 @@ function renderHome(){
     '</div>' +
   '</section>' +
   '<div class="categories">' +
-    '<div class="cat-tile notch" onclick="navigate(\'shop\',\'women\')"><img src="' + productImg('attractcatw',700,700) + '" alt="Women"><div class="cat-label"><span class="mono">LOOK 02</span><span>Women</span></div></div>' +
-    '<div class="cat-tile notch" onclick="navigate(\'shop\',\'men\')"><img src="' + productImg('attractcatm',700,700) + '" alt="Men"><div class="cat-label"><span class="mono">LOOK 03</span><span>Men</span></div></div>' +
-    '<div class="cat-tile notch" onclick="navigate(\'shop\',\'accessories\')"><img src="' + productImg('attractcata',700,700) + '" alt="Accessories"><div class="cat-label"><span class="mono">LOOK 04</span><span>Accessories</span></div></div>' +
+    '<div class="cat-tile notch" onclick="navigate(\'shop\',\'women\')">' + imgTag('attractcatw',700,700,'Women') + '<div class="cat-label"><span class="mono">LOOK 02</span><span>Women</span></div></div>' +
+    '<div class="cat-tile notch" onclick="navigate(\'shop\',\'men\')">' + imgTag('attractcatm',700,700,'Men') + '<div class="cat-label"><span class="mono">LOOK 03</span><span>Men</span></div></div>' +
+    '<div class="cat-tile notch" onclick="navigate(\'shop\',\'accessories\')">' + imgTag('attractcata',700,700,'Accessories') + '<div class="cat-label"><span class="mono">LOOK 04</span><span>Accessories</span></div></div>' +
   '</div>' +
   '<section class="section">' +
     '<h2 class="section-title">New Arrivals</h2>' +
     '<div class="product-grid">' + featured.map(renderProductCard).join('') + '</div>' +
   '</section>' +
   '<section class="brand-story">' +
-    '<img src="' + productImg('attractstory',900,1000) + '" alt="Attract brand story">' +
+    imgTag('attractstory',900,1000,'Attract brand story') +
     '<div class="story-text"><h2>Less, But Better</h2><p>Attract is built on restraint: considered fabrics, clean lines, and pieces designed to outlast trends. No noise, just clothing that works.</p></div>' +
   '</section>';
 }
 
 function renderProductCard(p){
   return '<div class="product-card" onclick="navigate(\'product\',' + p.id + ')">' +
-    '<div class="product-img-wrap notch"><img src="' + productImg(p.seed,600,800) + '" loading="lazy" alt="' + p.name + '"></div>' +
+    '<div class="product-img-wrap notch">' + imgTag(p.seed,600,800,p.name,'loading="lazy"') + '</div>' +
     '<p class="product-name">' + p.name + '</p>' +
     '<p class="product-price mono">' + formatPrice(p.price) + '</p>' +
   '</div>';
@@ -442,7 +448,7 @@ function renderProduct(id){
     return '<button class="size-btn mono" data-size="' + s + '" onclick="selectSize(this)">' + s + '</button>';
   }).join('');
   return '<div class="product-detail">' +
-    '<div class="detail-image notch"><img src="' + productImg(p.seed,900,1200) + '" alt="' + p.name + '"></div>' +
+    '<div class="detail-image notch">' + imgTag(p.seed,900,1200,p.name) + '</div>' +
     '<div class="detail-info">' +
       '<h1>' + p.name + '</h1>' +
       '<p class="price mono">' + formatPrice(p.price) + '</p>' +
@@ -509,7 +515,7 @@ function renderCartItems(){
     container.innerHTML = cart.map(function(item, idx){
       var p = findProduct(item.productId);
       return '<div class="cart-line">' +
-        '<img src="' + productImg(p.seed,140,180) + '" alt="' + p.name + '">' +
+        imgTag(p.seed,140,180,p.name) +
         '<div class="cart-line-info">' +
           '<p class="cart-line-name">' + p.name + '</p>' +
           '<p class="cart-line-meta mono">Size ' + item.size + '</p>' +
@@ -587,7 +593,7 @@ function renderCheckout(){
   var total = subtotal + DELIVERY_FEE;
   var summaryLines = cart.map(function(item){
     var p = findProduct(item.productId);
-    return '<div class="summary-line"><img src="' + productImg(p.seed,100,130) + '" alt="' + p.name + '">' +
+    return '<div class="summary-line">' + imgTag(p.seed,100,130,p.name) +
       '<div class="summary-line-info"><p>' + p.name + '</p><p class="dim mono">Size ' + item.size + ' x ' + item.qty + '</p></div>' +
       '<p class="mono">' + formatPrice(p.price*item.qty) + '</p></div>';
   }).join('');
